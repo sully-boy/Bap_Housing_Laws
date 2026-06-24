@@ -29,7 +29,7 @@
     line-height: 1.6;
   }
 
-  /* ── HERO ── */
+  /* HERO */
   .hero {
     height: 100vh;
     display: flex;
@@ -48,7 +48,6 @@
     background: linear-gradient(to right, var(--red), transparent);
   }
   .hero-eyebrow {
-    font-family: var(--font-body);
     font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -89,10 +88,7 @@
     background: var(--red);
   }
 
-  /* ── LAW SECTION ── */
-  .law-section {
-    padding: 0;
-  }
+  .law-section { padding: 0; }
 
   /* image block */
   .image-block {
@@ -120,6 +116,37 @@
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
   }
+
+  /* static law card (no video) */
+  .law-card {
+    padding: 4rem 8vw;
+    border-bottom: 1px solid var(--gray);
+    background: #111;
+  }
+  .law-card-inner { max-width: 700px; }
+  .law-name-static {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: normal;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+  .law-summary-static {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: rgba(240,237,232,0.85);
+    max-width: 600px;
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid var(--red);
+    background: rgba(255,255,255,0.04);
+    margin-top: 1rem;
+  }
+  .law-summary-static ul {
+    padding-left: 1.25rem;
+    margin-top: 0.5rem;
+  }
+  .law-summary-static li { margin-bottom: 0.4rem; }
 
   /* video block */
   .video-block {
@@ -166,18 +193,13 @@
     padding: 1.25rem 1.5rem;
     border-left: 3px solid var(--red);
   }
-  .law-summary ul {
-    padding-left: 1.25rem;
-    margin-top: 0.5rem;
-  }
-  .law-summary li {
-    margin-bottom: 0.4rem;
-  }
+  .law-summary ul { padding-left: 1.25rem; margin-top: 0.5rem; }
+  .law-summary li { margin-bottom: 0.4rem; }
 
   .video-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* 16:9 */
+    padding-top: 56.25%;
   }
   .video-wrapper iframe {
     position: absolute;
@@ -187,7 +209,15 @@
     border: none;
   }
 
-  /* divider between laws */
+  /* second video in a section — hidden until first ends */
+  .video-block.secondary {
+    display: none;
+  }
+  .video-block.secondary.visible {
+    display: block;
+  }
+
+  /* divider */
   .law-divider {
     display: flex;
     align-items: center;
@@ -231,7 +261,6 @@
     line-height: 1.6;
   }
 
-
   .begin-btn {
     margin-top: 2.5rem;
     background: var(--red);
@@ -245,22 +274,14 @@
     cursor: pointer;
     transition: background 0.2s, transform 0.15s;
   }
-  .begin-btn:hover {
-    background: var(--red-light);
-    transform: translateY(-2px);
-  }
-  .begin-btn:active {
-    transform: translateY(0);
-  }
-  /* lock scroll until begun */
-  body.locked {
-    overflow: hidden;
-  }
+  .begin-btn:hover { background: var(--red-light); transform: translateY(-2px); }
+  .begin-btn:active { transform: translateY(0); }
+  body.locked { overflow: hidden; }
 
   @media (max-width: 700px) {
     .image-pair { grid-template-columns: 1fr; }
-    .law-summary { font-size: 0.82rem; }
-    .law-name { font-size: 2rem; }
+    .law-summary, .law-summary-static { font-size: 0.82rem; }
+    .law-name, .law-name-static { font-size: 2rem; }
     footer { flex-direction: column; }
   }
 </style>
@@ -276,33 +297,28 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     LAW 1 — SB 9
-     ══════════════════════════════════════════ -->
+<!-- ── 01 SB 9 ── -->
 <div class="law-divider">
   <span class="law-divider-num">01</span>
   <div class="law-divider-line"></div>
 </div>
 
 <section class="law-section" id="sb9">
-  <!-- Images first -->
   <div class="image-block">
     <div class="image-block-inner">
       <div class="image-pair">
         <div>
-          <img src="SB9 Before.jpeg" alt="SB 9 lot diagram — existing condition">
+          <img src="SB9 Before.jpeg" alt="SB 9 — existing single-family lot">
           <p class="image-caption">Existing single-family lot</p>
         </div>
         <div>
-          <img src="SB 9 Before and after_1.jpeg" alt="SB 9 lot diagram — after lot split with two duplexes">
+          <img src="SB 9 Before and after_1.jpeg" alt="SB 9 — after lot split with two duplexes">
           <p class="image-caption">After urban lot split: two duplexes, four units</p>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Video -->
-  <div class="video-block">
+  <div class="video-block" data-law="sb9">
     <div class="video-overlay" id="overlay-sb9">
       <p class="law-label">State Law</p>
       <h2 class="law-name">SB 9</h2>
@@ -310,20 +326,17 @@
         Requires ministerial approval of single-family homes and duplexes and/or urban lot splits on single-family zoned parcels. Allows up to four residences per R-1 lot (i.e., two duplexes on two lots). SB 450 (2024) removed additional barriers, but there's more to do.
       </div>
     </div>
-    <div class="video-wrapper" id="wrapper-sb9">
+    <div class="video-wrapper">
       <iframe id="iframe-sb9"
         src="https://player.vimeo.com/video/1204030108?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
       </iframe>
     </div>
   </div>
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     LAW 2 — ADU LAW
-     ══════════════════════════════════════════ -->
+<!-- ── 02 ADU SINGLE-FAMILY ── -->
 <div class="law-divider">
   <span class="law-divider-num">02</span>
   <div class="law-divider-line"></div>
@@ -332,12 +345,11 @@
 <section class="law-section" id="adu">
   <div class="image-block">
     <div class="image-block-inner">
-      <img src="ADU After.jpeg" alt="ADU diagram — attached and detached ADU on single-family lot">
+      <img src="ADU After.jpeg" alt="ADU — attached and detached ADU on single-family lot">
       <p class="image-caption">Attached conversion ADU + detached new construction ADU on a single-family lot</p>
     </div>
   </div>
-
-  <div class="video-block">
+  <div class="video-block" data-law="adu">
     <div class="video-overlay" id="overlay-adu">
       <p class="law-label">State Law</p>
       <h2 class="law-name">ADU Law</h2>
@@ -349,20 +361,17 @@
         </ul>
       </div>
     </div>
-    <div class="video-wrapper" id="wrapper-adu">
+    <div class="video-wrapper">
       <iframe id="iframe-adu"
         src="https://player.vimeo.com/video/1204030537?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
       </iframe>
     </div>
   </div>
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     LAW 3 — SHRA SINGLE-FAMILY
-     ══════════════════════════════════════════ -->
+<!-- ── 03 SB 1123 / SHRA SINGLE-FAMILY ── -->
 <div class="law-divider">
   <span class="law-divider-num">03</span>
   <div class="law-divider-line"></div>
@@ -373,21 +382,20 @@
     <div class="image-block-inner">
       <div class="image-pair">
         <div>
-          <img src="SB9 Before.jpeg" alt="SHRA single-family — existing vacant lot">
+          <img src="SB9 Before.jpeg" alt="SB 1123 — existing vacant lot">
           <p class="image-caption">Qualifying vacant R-1 parcel</p>
         </div>
         <div>
-          <img src="SHRA AFTER" alt="SHRA single-family — after subdivision into starter homes">
+          <img src="SHRA AFTER.jpeg" alt="SB 1123 — after subdivision into starter homes">
           <p class="image-caption">After ministerial subdivision: starter homes with ADUs</p>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="video-block">
+  <div class="video-block" data-law="shra-sf">
     <div class="video-overlay" id="overlay-shra-sf">
       <p class="law-label">State Law</p>
-      <h2 class="law-name">Starter Home Revitalization Act<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">Single-Family</em></h2>
+      <h2 class="law-name">SB 1123<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">Starter Home Revitalization Act — Single-Family</em></h2>
       <div class="law-summary">
         Local agencies must ministerially approve residential subdivisions of up to 10 parcels on vacant single-family zoned parcels up to 1.5 acres meeting certain criteria.
         <ul>
@@ -397,26 +405,24 @@
         </ul>
       </div>
     </div>
-    <div class="video-wrapper" id="wrapper-shra-sf">
+    <div class="video-wrapper">
       <iframe id="iframe-shra-sf"
         src="https://player.vimeo.com/video/1204267841?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
       </iframe>
     </div>
   </div>
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     LAW 4 — SB 4
-     ══════════════════════════════════════════ -->
+<!-- ── 04 SB 4 ── -->
 <div class="law-divider">
   <span class="law-divider-num">04</span>
   <div class="law-divider-line"></div>
 </div>
 
-  <div class="video-block">
+<section class="law-section" id="sb4">
+  <div class="video-block" data-law="sb4">
     <div class="video-overlay" id="overlay-sb4">
       <p class="law-label">State Law</p>
       <h2 class="law-name">SB 4<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">Faith Lands Act</em></h2>
@@ -428,20 +434,17 @@
         </ul>
       </div>
     </div>
-    <div class="video-wrapper" id="wrapper-sb4">
+    <div class="video-wrapper">
       <iframe id="iframe-sb4"
-        src="https://player.vimeo.com/video/1204032027?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
+        src="https://player.vimeo.com/video/1204264913?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
       </iframe>
     </div>
   </div>
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     LAW 5 — ADUs MULTI-FAMILY (SB 1211)
-     ══════════════════════════════════════════ -->
+<!-- ── 05 SB 1211 / ADU MULTI-FAMILY (two videos) ── -->
 <div class="law-divider">
   <span class="law-divider-num">05</span>
   <div class="law-divider-line"></div>
@@ -452,65 +455,100 @@
     <div class="image-block-inner">
       <div class="image-pair">
         <div>
-          <img src="SB 1211_2namenity existing.jpeg" alt="ADU multifamily — aerial of existing apartment complex with open parking">
+          <img src="SB 1211_2namenity existing.jpeg" alt="SB 1211 — existing apartment complex with surface parking">
           <p class="image-caption">Existing multifamily site with surface parking</p>
         </div>
         <div>
-          <img src="SB 1211_2 amenity after c.jpeg" alt="ADU multifamily — detached ADUs added in surface parking area">
+          <img src="SB 1211_2 amenity after c.jpeg" alt="SB 1211 — detached ADUs added in surface parking area">
           <p class="image-caption">Detached ADUs added to underutilized surface parking</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="video-block">
-    <div class="video-overlay" id="overlay-adu-mf">
+  <!-- Video 1 of 2 -->
+  <div class="video-block" data-law="adu-mf-1">
+    <div class="video-overlay" id="overlay-adu-mf-1">
       <p class="law-label">State Law</p>
-      <h2 class="law-name">ADUs — Multi-Family<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">SB 1211</em></h2>
+      <h2 class="law-name">SB 1211<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">ADU Multi-Family</em></h2>
       <div class="law-summary">
         Development can match the number of existing units with up to 8 detached ADUs, and conversion of non-livable space for up to 25% of the existing units to create a new interior ADU.
       </div>
     </div>
-    <div class="video-wrapper" id="wrapper-adu-mf">
-      <iframe id="iframe-adu-mf"
-        src="https://player.vimeo.com/video/1204264913?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
+    <div class="video-wrapper">
+      <iframe id="iframe-adu-mf-1"
+        src="https://player.vimeo.com/video/1204032027?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
       </iframe>
+    </div>
+  </div>
+
+  <!-- Video 2 of 2 — revealed after first ends -->
+  <div class="video-block secondary" id="adu-mf-2-block" data-law="adu-mf-2">
+    <div class="video-overlay" id="overlay-adu-mf-2">
+      <p class="law-label">State Law — continued</p>
+      <h2 class="law-name">SB 1211<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">ADU Multi-Family</em></h2>
+    </div>
+    <div class="video-wrapper">
+      <iframe id="iframe-adu-mf-2"
+        src="https://player.vimeo.com/video/1204266832?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <!-- SHRA MF static card -->
+  <div class="image-block">
+    <div class="image-block-inner">
+      <img src="MULTIFAMILY SHRA AFTER.jpeg" alt="SHRA Multi-Family — after ministerial subdivision">
+      <p class="image-caption">SHRA Multi-Family: ministerial subdivision on qualifying multifamily-zoned parcels</p>
+    </div>
+  </div>
+  <div class="law-card">
+    <div class="law-card-inner">
+      <p class="law-label">State Law</p>
+      <h2 class="law-name-static">Starter Home Revitalization Act<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">Multi-Family</em></h2>
+      <div class="law-summary-static">
+        Local agencies must ministerially review subdivisions of up to 10 parcels on qualifying multi-family zoned parcels up to 5 acres.
+        <ul>
+          <li>Resulting parcels must be &gt;600 sf in multi-family zones</li>
+          <li>Units can be attached or detached</li>
+          <li>Resulting lots create relatively low-cost ownership opportunity</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     LAW 7 — DENSITY BONUS LAW
-     ══════════════════════════════════════════ -->
+<!-- ── 06 DENSITY BONUS LAW ── -->
 <div class="law-divider">
-  <span class="law-divider-num">07</span>
+  <span class="law-divider-num">06</span>
   <div class="law-divider-line"></div>
 </div>
 
 <section class="law-section" id="dbl">
   <div class="image-block">
-    <div class="image-block-inner image-pair">
-      <div>
-        <img src="density bonus before" alt="Density Bonus — existing site aerial">
-        <p class="image-caption">Existing site</p>
-      </div>
-      <div>
-        <img src="Density Bonus After 1st floor.jpeg" alt="Density Bonus — floor plan diagrams showing density bonus units">
-        <p class="image-caption">1st and 2nd floor with bonus units and reduced setbacks</p>
+    <div class="image-block-inner">
+      <div class="image-pair">
+        <div>
+          <img src="density bonus before.jpeg" alt="Density Bonus — existing site">
+          <p class="image-caption">Existing site</p>
+        </div>
+        <div>
+          <img src="Density Bonus After 1st floor.jpeg" alt="Density Bonus — 1st floor with bonus units">
+          <p class="image-caption">1st floor with bonus units and reduced setbacks</p>
+        </div>
       </div>
     </div>
   </div>
   <div class="image-block">
-    <div class="image-block-inner image-pair">
-      <div>
-        <img src="dbl after 2nd floor.jpeg" alt="Density Bonus — site plan with landscape">
-        <p class="image-caption">Site plan with open space and landscape</p>
-      </div>
-
-  <div class="video-block">
+    <div class="image-block-inner">
+      <img src="dbl after 2nd floor.jpeg" alt="Density Bonus — 2nd floor plan">
+      <p class="image-caption">2nd floor plan</p>
+    </div>
+  </div>
+  <div class="video-block" data-law="dbl">
     <div class="video-overlay" id="overlay-dbl">
       <p class="law-label">State Law</p>
       <h2 class="law-name">Density Bonus Law</h2>
@@ -525,22 +563,19 @@
         </ul>
       </div>
     </div>
-    <div class="video-wrapper" id="wrapper-dbl">
+    <div class="video-wrapper">
       <iframe id="iframe-dbl"
-        src="https://player.vimeo.com/video/1204269616?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
+        src="https://player.vimeo.com/video/1204268803?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
       </iframe>
     </div>
   </div>
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     LAW 8 — ADAPTIVE REUSE
-     ══════════════════════════════════════════ -->
+<!-- ── 07 ADAPTIVE REUSE (no video) ── -->
 <div class="law-divider">
-  <span class="law-divider-num">08</span>
+  <span class="law-divider-num">07</span>
   <div class="law-divider-line"></div>
 </div>
 
@@ -549,37 +584,56 @@
     <div class="image-block-inner">
       <div class="image-pair">
         <div>
-          <img src="adaptive_image_1.jpg" alt="Adaptive Reuse — existing commercial building">
+          <img src="Adaptive Reuse Before.JPG" alt="Adaptive Reuse — existing commercial building">
           <p class="image-caption">Existing commercial building</p>
         </div>
         <div>
-          <img src="adaptive_image_2.jpg" alt="Adaptive Reuse — converted to residential">
-          <p class="image-caption">        Local agencies must permit the conversion of existing commercial/industrial buildings to residential or mixed use where qualifying projects meet certain affordability requirements and labor standards.
-        <ul>
-          <li>Rental: 8% low-income + 5% extremely low income units, or 15% lower income units</li>
-          <li>Owner-occupied: 30% moderate income or 15% lower income units</li>
-          <li>Historic preservation standards apply to buildings older than 50 years</li></p>
+          <img src="adaptive reuse view after.jpeg" alt="Adaptive Reuse — converted to residential">
+          <p class="image-caption">Converted to residential use</p>
         </div>
       </div>
     </div>
   </div>
+  <div class="law-card">
+    <div class="law-card-inner">
+      <p class="law-label">State Law</p>
+      <h2 class="law-name-static">Adaptive Reuse</h2>
+      <div class="law-summary-static">
+        Local agencies must permit the conversion of existing commercial/industrial buildings to residential or mixed use where qualifying projects meet certain affordability requirements and labor standards.
+        <ul>
+          <li>Rental: 8% low-income + 5% extremely low income units, or 15% lower income units</li>
+          <li>Owner-occupied: 30% moderate income or 15% lower income units</li>
+          <li>Historic preservation standards apply to buildings older than 50 years</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- ══════════════════════════════════════════
-     LAW 9 — SB 35 / SB 423
-     ══════════════════════════════════════════ -->
+
+<!-- ── 08 SB 35 / SB 423 ── -->
 <div class="law-divider">
-  <span class="law-divider-num">09</span>
+  <span class="law-divider-num">08</span>
   <div class="law-divider-line"></div>
 </div>
 
 <section class="law-section" id="sb35">
-  <div class="image-block">
-    <div class="image-block-inner">
-      <https://vimeo.com/1204269616?share=copy&fl=sv&fe=ci>
+  <div class="video-block" data-law="sb35">
+    <div class="video-overlay" id="overlay-sb35">
+      <p class="law-label">State Law</p>
+      <h2 class="law-name">SB 35 / SB 423</h2>
+      <div class="law-summary">
+        Requires ministerial approval of qualifying multifamily and mixed-use affordable housing projects in jurisdictions that have not made sufficient progress on their RHNA goals. Projects must meet criteria including:
+        <ul>
+          <li>Located on property meeting certain site conditions</li>
+          <li>Prevailing wage and trained workforce requirements for projects with &gt;10 units</li>
+        </ul>
+      </div>
+    </div>
+    <div class="video-wrapper">
       <iframe id="iframe-sb35"
-        src="https://player.vimeo.com/video/SB35_ID?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
+        src="https://player.vimeo.com/video/1204269616?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
       </iframe>
     </div>
   </div>
@@ -594,24 +648,15 @@
 
 
 <script>
-  const laws = ['sb9','adu','shra-sf','sb4','adu-mf','shra-mf','dbl','adaptive','sb35'];
-  let begun = false;
-
-  // Lock page scroll until Begin is clicked
   document.body.classList.add('locked');
 
   document.getElementById('beginBtn').addEventListener('click', () => {
-    begun = true;
     document.body.classList.remove('locked');
     document.getElementById('beginBtn').style.display = 'none';
-
-    // Show scroll hint text
     const hint = document.createElement('p');
     hint.className = 'scroll-hint';
     hint.textContent = 'Scroll to explore';
     document.getElementById('beginBtn').parentNode.appendChild(hint);
-
-    // Start observing now that audio is unlocked
     startObserver();
   });
 
@@ -620,25 +665,53 @@
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         const block = entry.target;
-        const id = block.getAttribute('data-law');
-        const overlay = document.getElementById('overlay-' + id);
-        const iframe  = document.getElementById('iframe-' + id);
+        const law = block.getAttribute('data-law');
+        const overlay = document.getElementById('overlay-' + law);
+        const iframe  = document.getElementById('iframe-' + law);
 
+        // Fade out overlay after 2.2s
         if (overlay) {
           overlay.style.transition = 'opacity 1.2s ease';
-          setTimeout(() => { overlay.classList.add('hidden'); }, 2200);
+          setTimeout(() => overlay.classList.add('hidden'), 2200);
         }
 
+        // Autoplay
         if (iframe && iframe.src.includes('autoplay=0')) {
           iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+        }
+
+        // Special case: after first SB1211 video, reveal second
+        if (law === 'adu-mf-1') {
+          // Poll for video end via Vimeo postMessage
+          window.addEventListener('message', function onMsg(e) {
+            if (typeof e.data !== 'string') return;
+            try {
+              const data = JSON.parse(e.data);
+              if (data.event === 'finish' && e.source === iframe.contentWindow) {
+                const block2 = document.getElementById('adu-mf-2-block');
+                block2.classList.add('visible');
+                // Autoplay second video
+                const iframe2 = document.getElementById('iframe-adu-mf-2');
+                iframe2.src = iframe2.src.replace('autoplay=0', 'autoplay=1');
+                // Fade overlay of second
+                const overlay2 = document.getElementById('overlay-adu-mf-2');
+                if (overlay2) {
+                  overlay2.style.transition = 'opacity 1.2s ease';
+                  setTimeout(() => overlay2.classList.add('hidden'), 2200);
+                }
+                window.removeEventListener('message', onMsg);
+              }
+            } catch(err) {}
+          });
+          // Also tell Vimeo to send events
+          iframe.contentWindow.postMessage(JSON.stringify({method: 'addEventListener', value: 'finish'}), '*');
         }
 
         observer.unobserve(block);
       });
     }, { threshold: 0.4 });
 
-    document.querySelectorAll('.video-block').forEach((block, i) => {
-      block.setAttribute('data-law', laws[i]);
+    document.querySelectorAll('.video-block:not(.secondary)').forEach(block => {
       observer.observe(block);
     });
   }
