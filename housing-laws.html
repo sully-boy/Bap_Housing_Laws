@@ -90,9 +90,22 @@
 
   .law-section { padding: 0; }
 
+  /* section heading bar — sits between divider number and images */
+  .section-heading {
+    padding: 2.5rem 8vw 2rem;
+    border-bottom: 1px solid var(--gray);
+  }
+  .section-heading h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    font-weight: normal;
+    color: var(--text);
+    line-height: 1.15;
+  }
+
   /* image block */
   .image-block {
-    padding: 5rem 8vw;
+    padding: 3.5rem 8vw;
     border-bottom: 1px solid var(--gray);
   }
   .image-block-inner {
@@ -114,6 +127,11 @@
   .image-pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .image-trio {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1.5rem;
   }
 
@@ -142,10 +160,7 @@
     background: rgba(255,255,255,0.04);
     margin-top: 1rem;
   }
-  .law-summary-static ul {
-    padding-left: 1.25rem;
-    margin-top: 0.5rem;
-  }
+  .law-summary-static ul { padding-left: 1.25rem; margin-top: 0.5rem; }
   .law-summary-static li { margin-bottom: 0.4rem; }
 
   /* video block */
@@ -163,7 +178,7 @@
     padding: 4rem 8vw;
     background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
     z-index: 2;
-    transition: opacity 0.6s ease;
+    /* no transition here — JS controls fade */
   }
   .video-overlay.hidden {
     opacity: 0;
@@ -196,6 +211,32 @@
   .law-summary ul { padding-left: 1.25rem; margin-top: 0.5rem; }
   .law-summary li { margin-bottom: 0.4rem; }
 
+  /* keep scrolling nudge shown after video ends */
+  .keep-scrolling {
+    display: none;
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
+    z-index: 3;
+    align-items: center;
+    gap: 0.6rem;
+    animation: nudge 1.6s ease-in-out infinite;
+  }
+  .keep-scrolling.visible { display: flex; }
+  .keep-scrolling::after {
+    content: '↓';
+    font-size: 14px;
+  }
+  @keyframes nudge {
+    0%, 100% { opacity: 0.5; transform: translateX(-50%) translateY(0); }
+    50% { opacity: 1; transform: translateX(-50%) translateY(4px); }
+  }
+
   .video-wrapper {
     position: relative;
     width: 100%;
@@ -209,13 +250,20 @@
     border: none;
   }
 
-  /* second video in a section — hidden until first ends */
-  .video-block.secondary {
+  /* freeze overlay — covers Vimeo end screen */
+  .freeze-overlay {
     display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: transparent;
+    cursor: default;
   }
-  .video-block.secondary.visible {
-    display: block;
-  }
+  .freeze-overlay.active { display: block; }
+
+  /* second video hidden until first ends */
+  .video-block.secondary { display: none; }
+  .video-block.secondary.visible { display: block; }
 
   /* divider */
   .law-divider {
@@ -278,8 +326,11 @@
   .begin-btn:active { transform: translateY(0); }
   body.locked { overflow: hidden; }
 
+  @media (max-width: 900px) {
+    .image-trio { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 700px) {
-    .image-pair { grid-template-columns: 1fr; }
+    .image-pair, .image-trio { grid-template-columns: 1fr; }
     .law-summary, .law-summary-static { font-size: 0.82rem; }
     .law-name, .law-name-static { font-size: 2rem; }
     footer { flex-direction: column; }
@@ -304,6 +355,9 @@
 </div>
 
 <section class="law-section" id="sb9">
+  <div class="section-heading">
+    <h2>Senate Bill (SB) 9, Urban Lot Splits</h2>
+  </div>
   <div class="image-block">
     <div class="image-block-inner">
       <div class="image-pair">
@@ -326,6 +380,8 @@
         Requires ministerial approval of single-family homes and duplexes and/or urban lot splits on single-family zoned parcels. Allows up to four residences per R-1 lot (i.e., two duplexes on two lots). SB 450 (2024) removed additional barriers, but there's more to do.
       </div>
     </div>
+    <div class="freeze-overlay" id="freeze-sb9"></div>
+    <div class="keep-scrolling" id="ks-sb9">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-sb9"
         src="https://player.vimeo.com/video/1204030108?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -343,10 +399,21 @@
 </div>
 
 <section class="law-section" id="adu">
+  <div class="section-heading">
+    <h2>ADU Law, Single-Family</h2>
+  </div>
   <div class="image-block">
     <div class="image-block-inner">
-      <img src="ADU After.jpeg" alt="ADU — attached and detached ADU on single-family lot">
-      <p class="image-caption">Attached conversion ADU + detached new construction ADU on a single-family lot</p>
+      <div class="image-pair">
+        <div>
+          <img src="SB9 Before.jpeg" alt="ADU — existing single-family lot before ADU">
+          <p class="image-caption">Existing single-family lot</p>
+        </div>
+        <div>
+          <img src="ADU After.jpeg" alt="ADU — lot after adding attached and detached ADU">
+          <p class="image-caption">After: attached conversion ADU + detached new construction ADU</p>
+        </div>
+      </div>
     </div>
   </div>
   <div class="video-block" data-law="adu">
@@ -361,6 +428,8 @@
         </ul>
       </div>
     </div>
+    <div class="freeze-overlay" id="freeze-adu"></div>
+    <div class="keep-scrolling" id="ks-adu">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-adu"
         src="https://player.vimeo.com/video/1204030537?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -378,6 +447,9 @@
 </div>
 
 <section class="law-section" id="shra-sf">
+  <div class="section-heading">
+    <h2>Starter Home Revitalization Act (SB 1123), Single-Family</h2>
+  </div>
   <div class="image-block">
     <div class="image-block-inner">
       <div class="image-pair">
@@ -405,6 +477,8 @@
         </ul>
       </div>
     </div>
+    <div class="freeze-overlay" id="freeze-shra-sf"></div>
+    <div class="keep-scrolling" id="ks-shra-sf">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-shra-sf"
         src="https://player.vimeo.com/video/1204267841?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -422,6 +496,9 @@
 </div>
 
 <section class="law-section" id="sb4">
+  <div class="section-heading">
+    <h2>SB 4</h2>
+  </div>
   <div class="video-block" data-law="sb4">
     <div class="video-overlay" id="overlay-sb4">
       <p class="law-label">State Law</p>
@@ -434,6 +511,8 @@
         </ul>
       </div>
     </div>
+    <div class="freeze-overlay" id="freeze-sb4"></div>
+    <div class="keep-scrolling" id="ks-sb4">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-sb4"
         src="https://player.vimeo.com/video/1204264913?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -444,13 +523,16 @@
 </section>
 
 
-<!-- ── 05 SB 1211 / ADU MULTI-FAMILY (two videos) ── -->
+<!-- ── 05 ADU LAW MULTI-FAMILY / SB 1211 + SHRA MF ── -->
 <div class="law-divider">
   <span class="law-divider-num">05</span>
   <div class="law-divider-line"></div>
 </div>
 
 <section class="law-section" id="adu-mf">
+  <div class="section-heading">
+    <h2>ADU Law, Multi-Family</h2>
+  </div>
   <div class="image-block">
     <div class="image-block-inner">
       <div class="image-pair">
@@ -475,6 +557,8 @@
         Development can match the number of existing units with up to 8 detached ADUs, and conversion of non-livable space for up to 25% of the existing units to create a new interior ADU.
       </div>
     </div>
+    <div class="freeze-overlay" id="freeze-adu-mf-1"></div>
+    <div class="keep-scrolling" id="ks-adu-mf-1">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-adu-mf-1"
         src="https://player.vimeo.com/video/1204032027?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -483,12 +567,14 @@
     </div>
   </div>
 
-  <!-- Video 2 of 2 — revealed after first ends -->
+  <!-- Video 2 of 2 -->
   <div class="video-block secondary" id="adu-mf-2-block" data-law="adu-mf-2">
     <div class="video-overlay" id="overlay-adu-mf-2">
       <p class="law-label">State Law — continued</p>
       <h2 class="law-name">SB 1211<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">ADU Multi-Family</em></h2>
     </div>
+    <div class="freeze-overlay" id="freeze-adu-mf-2"></div>
+    <div class="keep-scrolling" id="ks-adu-mf-2">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-adu-mf-2"
         src="https://player.vimeo.com/video/1204266832?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -497,13 +583,7 @@
     </div>
   </div>
 
-  <!-- SHRA MF static card -->
-  <div class="image-block">
-    <div class="image-block-inner">
-      <img src="MULTIFAMILY SHRA AFTER.jpeg" alt="SHRA Multi-Family — after ministerial subdivision">
-      <p class="image-caption">SHRA Multi-Family: ministerial subdivision on qualifying multifamily-zoned parcels</p>
-    </div>
-  </div>
+  <!-- SHRA MF: heading + text first, then image -->
   <div class="law-card">
     <div class="law-card-inner">
       <p class="law-label">State Law</p>
@@ -518,6 +598,12 @@
       </div>
     </div>
   </div>
+  <div class="image-block">
+    <div class="image-block-inner">
+      <img src="MULTIFAMILY SHRA AFTER.jpeg" alt="SHRA Multi-Family — after ministerial subdivision">
+      <p class="image-caption">SHRA Multi-Family: ministerial subdivision on qualifying multifamily-zoned parcels</p>
+    </div>
+  </div>
 </section>
 
 
@@ -528,9 +614,12 @@
 </div>
 
 <section class="law-section" id="dbl">
+  <div class="section-heading">
+    <h2>Density Bonus Law</h2>
+  </div>
   <div class="image-block">
     <div class="image-block-inner">
-      <div class="image-pair">
+      <div class="image-trio">
         <div>
           <img src="density bonus before.jpeg" alt="Density Bonus — existing site">
           <p class="image-caption">Existing site</p>
@@ -539,13 +628,11 @@
           <img src="Density Bonus After 1st floor.jpeg" alt="Density Bonus — 1st floor with bonus units">
           <p class="image-caption">1st floor with bonus units and reduced setbacks</p>
         </div>
+        <div>
+          <img src="dbl after 2nd floor.jpeg" alt="Density Bonus — 2nd floor plan">
+          <p class="image-caption">2nd floor plan</p>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="image-block">
-    <div class="image-block-inner">
-      <img src="dbl after 2nd floor.jpeg" alt="Density Bonus — 2nd floor plan">
-      <p class="image-caption">2nd floor plan</p>
     </div>
   </div>
   <div class="video-block" data-law="dbl">
@@ -563,6 +650,8 @@
         </ul>
       </div>
     </div>
+    <div class="freeze-overlay" id="freeze-dbl"></div>
+    <div class="keep-scrolling" id="ks-dbl">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-dbl"
         src="https://player.vimeo.com/video/1204268803?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -580,20 +669,7 @@
 </div>
 
 <section class="law-section" id="adaptive">
-  <div class="image-block">
-    <div class="image-block-inner">
-      <div class="image-pair">
-        <div>
-          <img src="Adaptive Reuse Before.JPG" alt="Adaptive Reuse — existing commercial building">
-          <p class="image-caption">Existing commercial building</p>
-        </div>
-        <div>
-          <img src="adaptive reuse view after.jpeg" alt="Adaptive Reuse — converted to residential">
-          <p class="image-caption">Converted to residential use</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- heading + text first -->
   <div class="law-card">
     <div class="law-card-inner">
       <p class="law-label">State Law</p>
@@ -608,6 +684,21 @@
       </div>
     </div>
   </div>
+  <!-- images after -->
+  <div class="image-block">
+    <div class="image-block-inner">
+      <div class="image-pair">
+        <div>
+          <img src="Adaptive Reuse Before.JPG" alt="Adaptive Reuse — existing commercial building">
+          <p class="image-caption">Existing commercial building</p>
+        </div>
+        <div>
+          <img src="adaptive reuse view after.jpeg" alt="Adaptive Reuse — converted to residential">
+          <p class="image-caption">Converted to residential use</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 
@@ -618,6 +709,9 @@
 </div>
 
 <section class="law-section" id="sb35">
+  <div class="section-heading">
+    <h2>SB 35</h2>
+  </div>
   <div class="video-block" data-law="sb35">
     <div class="video-overlay" id="overlay-sb35">
       <p class="law-label">State Law</p>
@@ -630,6 +724,8 @@
         </ul>
       </div>
     </div>
+    <div class="freeze-overlay" id="freeze-sb35"></div>
+    <div class="keep-scrolling" id="ks-sb35">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-sb35"
         src="https://player.vimeo.com/video/1204269616?autoplay=0&muted=0&controls=1&title=0&byline=0&portrait=0"
@@ -648,6 +744,9 @@
 
 
 <script>
+  // Video IDs that have their own freeze/keep-scrolling elements
+  const videoIds = ['sb9', 'adu', 'shra-sf', 'sb4', 'adu-mf-1', 'adu-mf-2', 'dbl', 'sb35'];
+
   document.body.classList.add('locked');
 
   document.getElementById('beginBtn').addEventListener('click', () => {
@@ -660,6 +759,58 @@
     startObserver();
   });
 
+  // Listen for Vimeo postMessage events (finish)
+  window.addEventListener('message', function(e) {
+    if (typeof e.data !== 'string') return;
+    try {
+      const data = JSON.parse(e.data);
+      if (data.event !== 'finish') return;
+
+      // Find which iframe sent this
+      videoIds.forEach(id => {
+        const iframe = document.getElementById('iframe-' + id);
+        if (iframe && e.source === iframe.contentWindow) {
+          onVideoEnd(id, iframe);
+        }
+      });
+    } catch(err) {}
+  });
+
+  function onVideoEnd(id, iframe) {
+    // Freeze: cover iframe to block Vimeo end screen
+    const freeze = document.getElementById('freeze-' + id);
+    if (freeze) freeze.classList.add('active');
+
+    // Show keep scrolling nudge
+    const ks = document.getElementById('ks-' + id);
+    if (ks) ks.classList.add('visible');
+
+    // Special: first SB1211 video ending reveals second
+    if (id === 'adu-mf-1') {
+      const block2 = document.getElementById('adu-mf-2-block');
+      block2.classList.add('visible');
+      const iframe2 = document.getElementById('iframe-adu-mf-2');
+      iframe2.src = iframe2.src.replace('autoplay=0', 'autoplay=1');
+      const overlay2 = document.getElementById('overlay-adu-mf-2');
+      if (overlay2) {
+        overlay2.style.transition = 'opacity 1.2s ease';
+        setTimeout(() => overlay2.classList.add('hidden'), 2200);
+      }
+      // Register finish listener for second video too (already handled above)
+    }
+  }
+
+  function registerVimeoEvents(iframe) {
+    // Tell Vimeo player to emit finish events
+    setTimeout(() => {
+      try {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ method: 'addEventListener', value: 'finish' }), '*'
+        );
+      } catch(e) {}
+    }, 1000);
+  }
+
   function startObserver() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -669,42 +820,18 @@
         const overlay = document.getElementById('overlay-' + law);
         const iframe  = document.getElementById('iframe-' + law);
 
-        // Fade out overlay after 2.2s
+        // Overlay: show for full video duration (do NOT auto-hide)
+        // It will stay until video ends, then freeze-overlay covers it anyway
+        // We just ensure it's visible when video starts
         if (overlay) {
-          overlay.style.transition = 'opacity 1.2s ease';
-          setTimeout(() => overlay.classList.add('hidden'), 2200);
+          overlay.style.transition = 'none';
+          overlay.classList.remove('hidden');
         }
 
         // Autoplay
         if (iframe && iframe.src.includes('autoplay=0')) {
           iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
-        }
-
-        // Special case: after first SB1211 video, reveal second
-        if (law === 'adu-mf-1') {
-          // Poll for video end via Vimeo postMessage
-          window.addEventListener('message', function onMsg(e) {
-            if (typeof e.data !== 'string') return;
-            try {
-              const data = JSON.parse(e.data);
-              if (data.event === 'finish' && e.source === iframe.contentWindow) {
-                const block2 = document.getElementById('adu-mf-2-block');
-                block2.classList.add('visible');
-                // Autoplay second video
-                const iframe2 = document.getElementById('iframe-adu-mf-2');
-                iframe2.src = iframe2.src.replace('autoplay=0', 'autoplay=1');
-                // Fade overlay of second
-                const overlay2 = document.getElementById('overlay-adu-mf-2');
-                if (overlay2) {
-                  overlay2.style.transition = 'opacity 1.2s ease';
-                  setTimeout(() => overlay2.classList.add('hidden'), 2200);
-                }
-                window.removeEventListener('message', onMsg);
-              }
-            } catch(err) {}
-          });
-          // Also tell Vimeo to send events
-          iframe.contentWindow.postMessage(JSON.stringify({method: 'addEventListener', value: 'finish'}), '*');
+          registerVimeoEvents(iframe);
         }
 
         observer.unobserve(block);
