@@ -200,7 +200,7 @@
     max-width: 700px;
   }
   .law-summary {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     line-height: 1.7;
     color: rgba(240,237,232,0.85);
     max-width: 600px;
@@ -326,12 +326,76 @@
   .begin-btn:active { transform: translateY(0); }
   body.locked { overflow: hidden; }
 
+  /* TABLE OF CONTENTS */
+  .toc {
+    display: none;
+    position: fixed;
+    top: 50%;
+    right: 2rem;
+    transform: translateY(-50%);
+    z-index: 100;
+    background: rgba(20,20,20,0.93);
+    border: 1px solid var(--gray-mid);
+    border-left: 3px solid var(--red);
+    padding: 1.5rem 1.75rem;
+    min-width: 210px;
+    backdrop-filter: blur(6px);
+  }
+  .toc.visible { display: block; }
+  .toc-title {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1rem;
+  }
+  .toc ol { list-style: none; padding: 0; margin: 0; }
+  .toc ol li { margin-bottom: 0.5rem; }
+  .toc ol li a {
+    font-size: 12px;
+    color: rgba(240,237,232,0.55);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+  .toc ol li a:hover { color: var(--text); }
+  .toc ol li a.active { color: var(--text); }
+  .toc-num { font-size: 10px; color: var(--gray-mid); min-width: 18px; }
+
+  /* INTRO */
+  .intro-section {
+    padding: 5rem 8vw;
+    border-bottom: 1px solid var(--gray);
+  }
+  .intro-section p {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text);
+    max-width: 780px;
+  }
+
+  /* FOOTER CTA */
+  .footer-cta {
+    padding: 3rem 8vw;
+    border-top: 1px solid var(--gray-mid);
+    text-align: center;
+  }
+  .footer-cta p {
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+  .footer-cta a { color: var(--red); text-decoration: none; }
+  .footer-cta a:hover { color: var(--red-light); }
+
   @media (max-width: 900px) {
     .image-trio { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 700px) {
     .image-pair, .image-trio { grid-template-columns: 1fr; }
-    .law-summary, .law-summary-static { font-size: 0.82rem; }
+    .law-summary, .law-summary-static { font-size: 0.88rem; }
     .law-name, .law-name-static { font-size: 2rem; }
     footer { flex-direction: column; }
   }
@@ -345,6 +409,27 @@
   <h1>California Housing Laws<br>Explained</h1>
   <p class="hero-sub">Eight state laws reshaping what's possible on single-family and multifamily parcels across California. Scroll to explore each one.</p>
   <button class="begin-btn" id="beginBtn">Begin</button>
+</section>
+
+
+<!-- TABLE OF CONTENTS (hidden until Begin) -->
+<nav class="toc" id="toc">
+  <p class="toc-title">Contents</p>
+  <ol>
+    <li><a href="#sb9"><span class="toc-num">01</span>SB 9, Urban Lot Splits</a></li>
+    <li><a href="#adu"><span class="toc-num">02</span>ADU Law, Single-Family</a></li>
+    <li><a href="#shra-sf"><span class="toc-num">03</span>SHRA, Single-Family</a></li>
+    <li><a href="#sb4"><span class="toc-num">04</span>SB 4</a></li>
+    <li><a href="#adu-mf"><span class="toc-num">05</span>ADU Law, Multi-Family</a></li>
+    <li><a href="#dbl"><span class="toc-num">06</span>Density Bonus Law</a></li>
+    <li><a href="#adaptive"><span class="toc-num">07</span>Adaptive Reuse</a></li>
+    <li><a href="#sb35"><span class="toc-num">08</span>SB 35</a></li>
+  </ol>
+</nav>
+
+<!-- INTRO -->
+<section class="intro-section" id="intro">
+  <p>California state housing laws are a set of statutes that override local zoning to allow more housing than a city or county's own rules would otherwise permit. Under these laws, property owners can often build significantly more units on a parcel than local zoning allows — and because the laws require ministerial approval, cities must approve qualifying projects without discretionary review or community hearings. Many of these pathways also come with reduced or eliminated parking requirements, making denser infill development more financially viable. Each section below covers one law: the text box overlaid on the video summarizes its key rules, and the diagrams show before-and-after examples for a typical lot in the relevant zone. Scroll through to explore what each law makes possible.</p>
 </section>
 
 
@@ -734,6 +819,11 @@
 </section>
 
 
+<!-- FOOTER CTA -->
+<div class="footer-cta">
+  <p>Contact <a href="mailto:BAP@SB-DESIGNGROUP.COM">BAP</a> for more information on how you could apply California State Housing Law to your property!</p>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="bap">Bildsten Architecture & Planning<br>30 W. Figueroa Street · Santa Barbara, CA · 805-845-2646</div>
@@ -750,12 +840,34 @@
   document.getElementById('beginBtn').addEventListener('click', () => {
     document.body.classList.remove('locked');
     document.getElementById('beginBtn').style.display = 'none';
+    // Show TOC
+    document.getElementById('toc').classList.add('visible');
     const hint = document.createElement('p');
     hint.className = 'scroll-hint';
     hint.textContent = 'Scroll to explore';
     document.getElementById('beginBtn').parentNode.appendChild(hint);
     startObserver();
+    startTocHighlight();
   });
+
+  // TOC active section highlight
+  function startTocHighlight() {
+    const sections = ['intro','sb9','adu','shra-sf','sb4','adu-mf','dbl','adaptive','sb35'];
+    const tocLinks = document.querySelectorAll('.toc a');
+    const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
+
+    const tocObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        tocLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { threshold: 0.3 });
+
+    sectionEls.forEach(el => tocObserver.observe(el));
+  }
 
   // Listen for Vimeo postMessage events (finish)
   window.addEventListener('message', function(e) {
