@@ -331,15 +331,16 @@
     display: none;
     position: fixed;
     top: 50%;
-    right: 2rem;
+    right: 1rem;
     transform: translateY(-50%);
-    z-index: 100;
-    background: rgba(20,20,20,0.93);
+    z-index: 9999;
+    background: rgba(20,20,20,0.95);
     border: 1px solid var(--gray-mid);
     border-left: 3px solid var(--red);
-    padding: 1.5rem 1.75rem;
-    min-width: 210px;
+    padding: 1.25rem 1.5rem;
+    width: 190px;
     backdrop-filter: blur(6px);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.5);
   }
   .toc.visible { display: block; }
   .toc-title {
@@ -841,7 +842,9 @@
     document.body.classList.remove('locked');
     document.getElementById('beginBtn').style.display = 'none';
     // Show TOC
-    document.getElementById('toc').classList.add('visible');
+    const toc = document.getElementById('toc');
+    toc.classList.add('visible');
+    console.log('TOC element:', toc, 'visible:', toc.classList.contains('visible'));
     const hint = document.createElement('p');
     hint.className = 'scroll-hint';
     hint.textContent = 'Scroll to explore';
