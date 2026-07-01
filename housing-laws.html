@@ -250,10 +250,6 @@
     border: none;
   }
 
-  /* freeze overlay — no longer needed, kept as empty rule */
-  .freeze-overlay { display: none; }
-  .freeze-overlay.active { display: block; }
-
   /* second video hidden until first ends */
   .video-block.secondary { display: none; }
   .video-block.secondary.visible { display: block; }
@@ -485,7 +481,6 @@
         Requires ministerial approval of single-family homes and duplexes and/or urban lot splits on single-family zoned parcels. Allows up to four residences per R-1 lot (i.e., two duplexes on two lots). SB 450 (2024) removed additional barriers, but there's more to do.
       </div>
     </div>
-    <div class="freeze-overlay" id="freeze-sb9"></div>
     <div class="keep-scrolling" id="ks-sb9">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-sb9"
@@ -533,7 +528,6 @@
         </ul>
       </div>
     </div>
-    <div class="freeze-overlay" id="freeze-adu"></div>
     <div class="keep-scrolling" id="ks-adu">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-adu"
@@ -582,7 +576,6 @@
         </ul>
       </div>
     </div>
-    <div class="freeze-overlay" id="freeze-shra-sf"></div>
     <div class="keep-scrolling" id="ks-shra-sf">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-shra-sf"
@@ -616,7 +609,6 @@
         </ul>
       </div>
     </div>
-    <div class="freeze-overlay" id="freeze-sb4"></div>
     <div class="keep-scrolling" id="ks-sb4">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-sb4"
@@ -662,7 +654,6 @@
         Development can match the number of existing units with up to 8 detached ADUs, and conversion of non-livable space for up to 25% of the existing units to create a new interior ADU.
       </div>
     </div>
-    <div class="freeze-overlay" id="freeze-adu-mf-1"></div>
     <div class="keep-scrolling" id="ks-adu-mf-1">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-adu-mf-1"
@@ -678,7 +669,6 @@
       <p class="law-label">State Law — continued</p>
       <h2 class="law-name">SB 1211<br><em style="font-size:0.65em;font-style:normal;color:var(--caption)">ADU Multi-Family</em></h2>
     </div>
-    <div class="freeze-overlay" id="freeze-adu-mf-2"></div>
     <div class="keep-scrolling" id="ks-adu-mf-2">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-adu-mf-2"
@@ -755,7 +745,6 @@
         </ul>
       </div>
     </div>
-    <div class="freeze-overlay" id="freeze-dbl"></div>
     <div class="keep-scrolling" id="ks-dbl">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-dbl"
@@ -827,7 +816,6 @@
         </ul>
       </div>
     </div>
-    <div class="freeze-overlay" id="freeze-sb35"></div>
     <div class="keep-scrolling" id="ks-sb35">Keep scrolling</div>
     <div class="video-wrapper">
       <iframe id="iframe-sb35"
@@ -944,9 +932,7 @@
         const dur = videoDurations[matchedId];
         if (dur) {
           iframe.contentWindow.postMessage(JSON.stringify({ method: 'setCurrentTime', value: dur - 0.1 }), '*');
-          setTimeout(() => {
-            iframe.contentWindow.postMessage(JSON.stringify({ method: 'pause' }), '*');
-          }, 150);
+          iframe.contentWindow.postMessage(JSON.stringify({ method: 'pause' }), '*');
         }
         onVideoEnd(matchedId, iframe);
       }
@@ -981,8 +967,7 @@
         const iframe  = document.getElementById('iframe-' + law);
 
         // Overlay: show for full video duration (do NOT auto-hide)
-        // It will stay until video ends, then freeze-overlay covers it anyway
-        // We just ensure it's visible when video starts
+            // We just ensure it's visible when video starts
         if (overlay) {
           overlay.style.transition = 'none';
           overlay.classList.remove('hidden');
