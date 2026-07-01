@@ -250,15 +250,8 @@
     border: none;
   }
 
-  /* freeze overlay — covers Vimeo end screen */
-  .freeze-overlay {
-    display: none;
-    position: absolute;
-    inset: 0;
-    z-index: 4;
-    background: #000;
-    cursor: default;
-  }
+  /* freeze overlay — no longer needed, kept as empty rule */
+  .freeze-overlay { display: none; }
   .freeze-overlay.active { display: block; }
 
   /* second video hidden until first ends */
@@ -908,28 +901,59 @@
     sectionEls.forEach(el => tocObserver.observe(el));
   }
 
-  // Listen for Vimeo postMessage events (finish)
+  // Track duration for each video so we can seek to last frame on finish
+  const videoDurations = {};
+
+  function registerVimeoEvents(iframe) {
+    const id = iframe.id.replace('iframe-', '');
+    // Retry posting to ensure player is ready
+    [500, 1000, 2000, 3000].forEach(delay => {
+      setTimeout(() => {
+        try {
+          // Subscribe to duration and finish events
+          iframe.contentWindow.postMessage(JSON.stringify({ method: 'addEventListener', value: 'finish' }), '*');
+          iframe.contentWindow.postMessage(JSON.stringify({ method: 'addEventListener', value: 'durationchange' }), '*');
+        } catch(e) {}
+      }, delay);
+    });
+  }
+
+  // Listen for all Vimeo postMessage events
   window.addEventListener('message', function(e) {
     if (typeof e.data !== 'string') return;
     try {
       const data = JSON.parse(e.data);
-      if (data.event !== 'finish') return;
 
       // Find which iframe sent this
+      let matchedId = null;
       videoIds.forEach(id => {
         const iframe = document.getElementById('iframe-' + id);
-        if (iframe && e.source === iframe.contentWindow) {
-          onVideoEnd(id, iframe);
-        }
+        if (iframe && e.source === iframe.contentWindow) matchedId = id;
       });
+      if (!matchedId) return;
+
+      const iframe = document.getElementById('iframe-' + matchedId);
+
+      // Store duration when we learn it
+      if (data.event === 'durationchange' && data.data && data.data.duration) {
+        videoDurations[matchedId] = data.data.duration;
+      }
+
+      // On finish: seek to (duration - 0.1s) and pause — freezes on last frame
+      if (data.event === 'finish') {
+        const dur = videoDurations[matchedId];
+        if (dur) {
+          iframe.contentWindow.postMessage(JSON.stringify({ method: 'setCurrentTime', value: dur - 0.1 }), '*');
+          setTimeout(() => {
+            iframe.contentWindow.postMessage(JSON.stringify({ method: 'pause' }), '*');
+          }, 150);
+        }
+        onVideoEnd(matchedId, iframe);
+      }
     } catch(err) {}
   });
 
   function onVideoEnd(id, iframe) {
-    // Freeze: cover iframe to block Vimeo end screen
-    const freeze = document.getElementById('freeze-' + id);
-    if (freeze) freeze.classList.add('active');
-
     // Show keep scrolling nudge
     const ks = document.getElementById('ks-' + id);
     if (ks) ks.classList.add('visible');
@@ -940,29 +964,14 @@
       block2.classList.add('visible');
       const iframe2 = document.getElementById('iframe-adu-mf-2');
       iframe2.src = iframe2.src.replace('autoplay=0', 'autoplay=1');
+      registerVimeoEvents(iframe2);
       const overlay2 = document.getElementById('overlay-adu-mf-2');
       if (overlay2) {
         overlay2.style.transition = 'opacity 1.2s ease';
         setTimeout(() => overlay2.classList.add('hidden'), 2200);
       }
-      // Register finish listener for second video too (already handled above)
     }
   }
-
-  function registerVimeoEvents(iframe) {
-    // Try multiple times to ensure the player is ready
-    [500, 1000, 2000, 3000].forEach(delay => {
-      setTimeout(() => {
-        try {
-          iframe.contentWindow.postMessage(
-            JSON.stringify({ method: 'addEventListener', value: 'finish' }), '*'
-          );
-        } catch(e) {}
-      }, delay);
-    });
-  }
-
-  function startObserver() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
