@@ -958,6 +958,8 @@
       }
     }
   }
+
+  function startObserver() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
@@ -966,14 +968,11 @@
         const overlay = document.getElementById('overlay-' + law);
         const iframe  = document.getElementById('iframe-' + law);
 
-        // Overlay: show for full video duration (do NOT auto-hide)
-            // We just ensure it's visible when video starts
         if (overlay) {
           overlay.style.transition = 'none';
           overlay.classList.remove('hidden');
         }
 
-        // Autoplay
         if (iframe && iframe.src.includes('autoplay=0')) {
           iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
           registerVimeoEvents(iframe);
