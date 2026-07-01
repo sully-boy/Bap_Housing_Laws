@@ -256,7 +256,7 @@
     position: absolute;
     inset: 0;
     z-index: 4;
-    background: transparent;
+    background: #000;
     cursor: default;
   }
   .freeze-overlay.active { display: block; }
@@ -950,14 +950,16 @@
   }
 
   function registerVimeoEvents(iframe) {
-    // Tell Vimeo player to emit finish events
-    setTimeout(() => {
-      try {
-        iframe.contentWindow.postMessage(
-          JSON.stringify({ method: 'addEventListener', value: 'finish' }), '*'
-        );
-      } catch(e) {}
-    }, 1000);
+    // Try multiple times to ensure the player is ready
+    [500, 1000, 2000, 3000].forEach(delay => {
+      setTimeout(() => {
+        try {
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ method: 'addEventListener', value: 'finish' }), '*'
+          );
+        } catch(e) {}
+      }, delay);
+    });
   }
 
   function startObserver() {
